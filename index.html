@@ -1,20 +1,35 @@
-
 <!DOCTYPE html>
-<html lang="en">1
+<html>
+<head>
+  <title>External App with Embedded LWC</title>
+</head>
+<body>
 
-    <script type="text/javascript" async="" src="https://curios-dev-ed.my.salesforce.com/lightning/lightning.out.latest/index.iife.prod.js"></script>
+  <div id="app-container"></div>
 
-    <lightning-out-application
-        app-id="1Usg50000000DWjCAM"
-        frontdoor-url="https://curios-dev-ed.my.salesforce.com/secur/frontdoor.jsp?otp=00D2w000000FPVP%21AQEAQNBdZLYkUtgPXXXZX7bEldD_vzgpu2r25qCu2CMEJA9MDhexvKnwlsxIPDgjOu37aegyhP1F_VfqjyjnkPuPO8.I4iq3&cshc=w000000Ur7Pw000000FPVP"
-        components="c-helloOut"
-        onready="onLightningReady">
-    </lightning-out-application>
-<script crossorigin="anonymous">
-        function onLightningReady(app) {
-            console.log('Lightning Out 2.0 app is ready', app);
-            // Communicate with embedded components via the app object
-        }
-</script>
+  <script src="https://curios-dev-ed.my.salesforce.com/lightning/lightning.out.latest/index.iife.prod.js"></script>
+  <script>
+    // Get frontdoor URL from UI Bridge API
+    // This assumes you have a valid Salesforce session
+    async function initLightningOut() {
+      const frontdoorUrl = "https://curios-dev-ed.my.salesforce.com/secur/frontdoor.jsp?otp=00D2w000000FPVP%21AQEAQNBdZLYkUtgPXXXZX7bEldD_vzgpu2r25qCu2CMEJA9MDhexvKnwlsxIPDgjOu37aegyhP1F_VfqjyjnkPuPO8.I4iq3&cshc=w000000Ur7Pw000000FPVP"; // Your auth logic here
+      
+      const lightningOutApp = document.createElement('lightning-out-application');
+      lightningOutApp.setAttribute('frontdoor-url', frontdoorUrl);
+      lightningOutApp.setAttribute('components', 'c-helloOut');
+      
+      lightningOutApp.addEventListener('lo.application.ready', () => {
+        console.log('Salesforce session established');
+      });
+      
+      lightningOutApp.addEventListener('lo.application.error', (e) => {
+        console.error('Authentication failed:', e.detail.message);
+      });
+      
+      document.getElementById('app-container').appendChild(lightningOutApp);
+    }
 
+    initLightningOut();
+  </script>
+</body>
 </html>
